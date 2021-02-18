@@ -5,10 +5,12 @@ using LinearAlgebra
 export distance_matrix_to_absolute_coordinates
 
 function distance_matrix_to_absolute_coordinates( D::Array{Float64,2} , bSquared::Bool=false , n_dimensions::Int64=2 )
-    # Same function can be found in my impetuous-gfa repo here:
-    # https://github.com/richardtjornhammar/impetuous/blob/master/src/impetuous/clustering.py
-    # around line 121 (same name)
-    if not bSquared
+    """
+    Same function can be found in my impetuous-gfa repo here:
+    https://github.com/richardtjornhammar/impetuous/blob/master/src/impetuous/clustering.py
+    around line 121 (same name)
+    """
+    if !bSquared
         D = D.^2.
     end
     N,M = size(D)
