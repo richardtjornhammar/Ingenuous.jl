@@ -5,7 +5,7 @@ To use a Julia package you will need a proper environment to develop in. I have 
 
 I then enter that environment :
 ```
-$ guix enviroment --manifest=generic_julia.scm
+$ guix environment --manifest=generic_julia.scm
 ```
 I start Julia :
 ```
