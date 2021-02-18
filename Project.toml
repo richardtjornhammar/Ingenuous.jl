@@ -1,0 +1,4 @@
+name = "Ingenuous"
+uuid = "fac5aad2-e1e3-4f92-b421-0d5ace47bb59"
+authors = ["Richard Tjörnhammar <richard.tjornhammar@gmail.com>"]
+version = "0.1.0"
