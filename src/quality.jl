@@ -2,7 +2,7 @@ module quality
 
 using LinearAlgebra
 
-export rankdata, qvalues
+export rankdata, qvalues , fractional_ranks
 
 function rankdata( values_in::Array{Float64,1} , method::AbstractString="ordinal" )
     if method == "ordinal"
@@ -23,6 +23,9 @@ end
 function qvalues( p_values_in::Array{Float64,1} ,
                   pi0::Float64 = 1.0 ,
 		  method::AbstractString="ordinal" )
+    """
+    See my method with the same name in https://github.com/richardtjornhammar/impetuous/blob/master/src/impetuous/quantification.py
+    """
     p_s = p_values_in
     qs_ = []
     m = length(p_s)

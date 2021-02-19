@@ -1,7 +1,7 @@
 name = "Ingenuous"
-uuid = "8c0702d1-12e6-4d3b-a2e9-1552817944e0"
+uuid = "c9534c2f-97e4-4c0d-a907-e474f4e0b4b2"
 authors = ["Richard Tjörnhammar <richard.tjornhammar@gmail.com>"]
-version = "0.2.0"
+version = "0.2.2"
 
 [deps]
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
