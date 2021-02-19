@@ -2,14 +2,42 @@ module clustering
 
 using LinearAlgebra
 
-export connectivity,test_matrix
+export connectivity, calculate_hierarchy_matrix
 
-test_matrix = reshape( [ [0.00, 0.10, 0.10, 9.00, 9.00, 9.00] ;
-              	[0.10, 0.00, 0.15, 9.00, 9.00, 9.00] ;
-        	[0.10, 0.15, 0.00, 9.00, 9.00, 9.00] ;
-        	[9.00, 9.00, 9.00, 0.00, 0.10, 0.10] ;
-        	[9.10, 9.00, 9.00, 0.10, 0.00, 0.15] ;
-        	[9.10, 9.00, 9.00, 0.10, 0.15, 0.00] ] , (6,6) )
+function order_unique( values )
+    svals = Set(reshape( values , (length(values)) ))
+    rvals = []; for v in svals append!(rvals,v) end
+    rvals = sort(rvals)
+    return(rvals)
+end
+
+function calculate_hierarchy_matrix( distance_matrix::Array{Float64,2} , bVerbose::Bool = false )
+    """ This is the saiga/pelican/panda you are looking for:
+        (linkage free hierarchical clustering)
+        https://github.com/richardtjornhammar/impetuous/blob/master/src/impetuous/hierarchical.py
+	around line 118 
+    """
+    NP = size(distance_matrix[:,1])[1]
+    uco_v = convert( Array{Float64}, order_unique( distance_matrix ) )
+    results = Dict("level"=>[] , "distance"=>[] , "hierarchy_matrix"=>Array{Int64} )
+    hmat = []
+    for icut in 1:length(uco_v)
+        cutoff = uco_v[icut]
+	outp = connectivity( distance_matrix, cutoff, bVerbose )
+	append!(results["level"]           , icut   )
+	append!(results["distance"]        , cutoff )
+	cout = reshape( convert( Array{Int64} , outp[:,1] ) ,(1,NP))
+	if icut==1
+	    hmat = cout
+	else
+	    hmat = vcat(hmat,cout)
+	end
+    end
+    results["hierarchy_matrix"] = hmat
+    results["level"] = convert(Array{Int64,1},results["level"])
+    results["distance"] = convert(Array{Float64,1},results["distance"])
+    return(results)
+end
 
 function connectivity( B::Array{Float64,2} , val::Float64 , bVerbose::Bool=false )
     """
@@ -24,17 +52,20 @@ This is a cutoff based clustering algorithm. The intended use is to supply a dis
     """
     nr_sq,mr_sq = size(B)
     if nr_sq != mr_sq 
-        println( "ERROR" )
+        println( "::ERROR::" )
         return(-1)
     end
     N = mr_sq
     res,nvisi,s,NN,ndx,C = [],[],[],[],[],0
-    res = append!(res,[0])
+    #res = append!(res,[0])
     for i in 1:N
         append!(nvisi,[i])
         append!(res,[0]); append!(res,[0])
         append!(ndx,[i])
     end
+    res   = convert(Array{Int64},res  )
+    ndx   = convert(Array{Int64},ndx  )
+    nvisi = convert(Array{Int64},nvisi)
     if bVerbose
         println(res," ",ndx," ",nvisi)
         println(nvisi[end])
@@ -84,7 +115,6 @@ This is a cutoff based clustering algorithm. The intended use is to supply a dis
             println("Cluster ",i," has ", Nc[i]," elements")
         end
     end
-    pop!(res)
     ret = transpose(reshape(res,(2,N)))
     if bVerbose
         println( ret, size(ret) )
